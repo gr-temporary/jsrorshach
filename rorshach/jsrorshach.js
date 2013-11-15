@@ -13,8 +13,8 @@ function collectFPS () {
 
 var jsRorshach = {
 
-	scaleX: 0.007,
-	scaleY: 0.007,
+	scaleX: 0.017,
+	scaleY: 0.017,
 	scaleT: 0.01,
 	time: 0,
 
@@ -31,6 +31,9 @@ var jsRorshach = {
 		this.width = canvas.width;
 		this.height = canvas.height;
 
+		this.scaleX = 1.5 / this.width;
+		this.scaleY = 1.5 / this.height;
+
 		this.ctx = canvas.getContext("2d");
 		this.imgdata = this.ctx.getImageData(0, 0, this.width, this.height);
 		this.data = this.imgdata.data;
@@ -38,35 +41,44 @@ var jsRorshach = {
 
 	step: function () {
 		this.time++;
+		var simplex = this.simplex,
+			scaleX = this.scaleX,
+			scaleY = this.scaleY,
+			scaleT = this.scaleT,
+			time = this.time,
+			width = this.width,
+			height = this.height,
+			data = this.data;
+		var i, j, x, y, n, n2, n3;
+		for(i=0; i<width / 2; i++) {
+			x = (i - width * 0.5) * (i - width * 0.5) * 4 / (width * width);
+			for(j=0; j<height; j++) {
+				y = (j - height * 0.5) * (j - height * 0.5) * 4 / (height * height);
 
-		var i, j, x, y, n, n2;
-		for(i=0; i<this.width / 2; i++) {
-			x = (i - this.width * 0.5) * (i - this.width * 0.5) * 4 / (this.width * this.width);
-			for(j=0; j<this.height; j++) {
-				y = (j - this.height * 0.5) * (j - this.height * 0.5) * 4 / (this.height * this.height);
-
-				n = this.simplex.noise3D(i * this.scaleX, j * this.scaleY, this.time * this.scaleT) * 0.5 + 0.5;
-				//n2 = this.simplex.noise3D(i * this.scaleX * 2, j * this.scaleY * 2, this.time * this.scaleT * 0.7) * 0.5 + 0.5;
-				//n = (n + n2) * 0.5;
+				n = simplex.noise3D(i * scaleX, j * scaleY, time * scaleT) * 0.5 + 0.5;
+				n2 = simplex.noise3D(i * scaleX * 2, j * scaleY * 2, time * scaleT * 0.7) * 0.5 + 0.5;
+				n3 = simplex.noise3D(i * scaleX * 4, j * scaleY * 4, time * scaleT * 1.1) * 0.5 + 0.5;
+				n = (n + n2 + n3) / 3;
 				n -= Math.pow((x > y ? x : y) * 0.8, 4);
-				if(n < 0.45)
+				if(n < 0.48)
 					n = 0;
-				else if(n < 0.55)
-					n = (n - 0.45) * 10;
-				else
+				else if(n > 0.52)
 					n = 1;
+				else
+					n = (n - 0.48) * 25;
+				/*n = (n + 0.5) | 0;*/
 				n = (n * 255) | 0;
 				n = 255 - n;
 				this.putPixel(i, j, n);
-				this.putPixel(this.width - i - 1, j, n);
+				this.putPixel(width - i - 1, j, n);
 			}
 		}
 		this.ctx.putImageData(this.imgdata, 0, 0);
 	},
 
-	animate: function(self) {
-		requestAnimationFrame(function() { self.animate(self) });
-		self.step();
+	animate: function() {
+		requestAnimationFrame( jsRorshach.animate );
+		jsRorshach.step();
 		FPS++;
 	},
 

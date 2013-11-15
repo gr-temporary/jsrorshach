@@ -7,27 +7,28 @@
 	<style>
 		html, body {
 			width: 100%;
-			background: #343434;
+			background: #343438 url(noise.png);
 			margin: 0;
 			padding: 0;
 		}
 
 		.container {
-			width: 400px;
-			height: 300px;
+			width: 480px;
+			height: 480px;
 			margin: 50px  auto;
-			box-shadow: 0 0 20px black;
+			box-shadow: 0 0 50px black;
 		}
 	</style>
 </head>
 <body>
-	<div class="container"><canvas id="main-canvas" width="400" height="300"></canvas></div>
+	
+	<div class="container"><canvas id="main-canvas" width="160" height="160" style="width: 480px; height: 480px"></canvas></div>
 	<script src="simplex-noise.js"></script>
 	<script src="jsrorshach.js"></script>
 
 	<script>
 		jsRorshach.init(document.getElementById('main-canvas'));
-		jsRorshach.animate(jsRorshach);
+		jsRorshach.animate();
 		collectFPS();
 	</script>
 </body>
