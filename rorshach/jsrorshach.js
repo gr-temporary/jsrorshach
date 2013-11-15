@@ -4,6 +4,13 @@
   window.requestAnimationFrame = requestAnimationFrame;
 })();
 
+var FPS = 0;
+function collectFPS () {
+	document.title = FPS.toString()+' fps';
+	FPS = 0;
+	setTimeout(collectFPS, 1000);
+}
+
 var jsRorshach = {
 
 	scaleX: 0.007,
@@ -39,8 +46,8 @@ var jsRorshach = {
 				y = (j - this.height * 0.5) * (j - this.height * 0.5) * 4 / (this.height * this.height);
 
 				n = this.simplex.noise3D(i * this.scaleX, j * this.scaleY, this.time * this.scaleT) * 0.5 + 0.5;
-				n2 = this.simplex.noise3D(i * this.scaleX * 2, j * this.scaleY * 2, this.time * this.scaleT * 0.7) * 0.5 + 0.5;
-				n = (n + n2) * 0.5;
+				//n2 = this.simplex.noise3D(i * this.scaleX * 2, j * this.scaleY * 2, this.time * this.scaleT * 0.7) * 0.5 + 0.5;
+				//n = (n + n2) * 0.5;
 				n -= Math.pow((x > y ? x : y) * 0.8, 4);
 				if(n < 0.45)
 					n = 0;
@@ -60,6 +67,7 @@ var jsRorshach = {
 	animate: function(self) {
 		requestAnimationFrame(function() { self.animate(self) });
 		self.step();
+		FPS++;
 	},
 
 	putPixel: function (x, y, v) {
