@@ -46,37 +46,36 @@
 		</p>
 	</div>
 	<script src="simplex-noise.js"></script>
-	<script src="jsrorshach.js"></script>
+	<script src="jsrorschach.js"></script>
 	<img src="smile.png">
 	<script>
-		jsRorschach.init(document.getElementById('main-canvas'));
-		jsRorschach.animate();
-		collectFPS();
+		var rory = new JSRorschach(document.getElementById('main-canvas'));
+		var collector = new FPSCounter(document);
+		rory.start(collector.addFrame);
 
 		function playPause () {
-			if(jsRorschach.paused) {
+			if(rory.paused) {
 				document.getElementById('play-pause').innerHTML = "||";
 				document.getElementById('rewind').style.display = "none";
 				document.getElementById('forward').style.display = "none";
 
-				jsRorschach.play();
+				rory.play(collector.addFrame);
 			} else {
 				document.getElementById('play-pause').innerHTML = "&#9658;";
 				document.getElementById('rewind').style.display = "";
 				document.getElementById('forward').style.display = "";
 
-				jsRorschach.pause();
-				jsRorschach.paused = true;
+				rory.pause();
 			}
 		}
 
 		function rewind () {
-			jsRorschach.time -= 2;
-			jsRorschach.step();
+			rory.time -= 2;
+			rory.step();
 		}
 
 		function forward () {
-			jsRorschach.step();
+			rory.step();
 		}
 	</script>
 </body>
