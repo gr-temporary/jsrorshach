@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Procedural Rorschach test</title>
+
+	<style>
+		html, body {
+			width: 100%;
+			background: #343438 url(noise.png);
+			margin: 0;
+			padding: 0;
+			font-family: Tahoma, sans-serif;
+		}
+
+		.container {
+			width: 480px;
+			height: 480px;
+			margin: 50px  auto;
+			box-shadow: 0 0 50px black;
+			text-align: center;
+		}
+
+		canvas {
+			width: 480px;
+			height: 480px;
+			/*-webkit-transform: scale3d(3, 3, 1) translate3d(53px, 53px, 0);*/
+		}
+
+		strong {
+			color: #eee;
+			cursor: pointer;
+			padding: 2em 1em 0 1em;
+		}
+
+		img {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<canvas id="main-canvas" width="160" height="160"></canvas>
+		<p>
+			<strong id="rewind" onclick="rewind()" style="display: none">&lt;&lt;</strong> <strong id="play-pause" onclick="playPause()">||</strong> <strong id="forward" onclick="forward()" style="display: none">&gt;&gt;</strong>
+		</p>
+	</div>
+	<script src="simplex-noise.js"></script>
+	<script src="jsrorshach.js"></script>
+	<img src="smile.png">
+	<script>
+		jsRorschach.init(document.getElementById('main-canvas'));
+		jsRorschach.animate();
+		collectFPS();
+
+		function playPause () {
+			if(jsRorschach.paused) {
+				document.getElementById('play-pause').innerHTML = "||";
+				document.getElementById('rewind').style.display = "none";
+				document.getElementById('forward').style.display = "none";
+
+				jsRorschach.play();
+			} else {
+				document.getElementById('play-pause').innerHTML = "&#9658;";
+				document.getElementById('rewind').style.display = "";
+				document.getElementById('forward').style.display = "";
+
+				jsRorschach.pause();
+				jsRorschach.paused = true;
+			}
+		}
+
+		function rewind () {
+			jsRorschach.time -= 2;
+			jsRorschach.step();
+		}
+
+		function forward () {
+			jsRorschach.step();
+		}
+	</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 (function() {
   var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-                              window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+                              window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || (function(f){window.setTimeout(f, 0);});
   window.requestAnimationFrame = requestAnimationFrame;
 })();
 
@@ -11,7 +11,7 @@ function collectFPS () {
 	setTimeout(collectFPS, 1000);
 }
 
-var jsRorshach = {
+var jsRorschach = {
 
 	scaleX: 0.017,
 	scaleY: 0.017,
@@ -24,6 +24,8 @@ var jsRorshach = {
 	ctx: null,
 	imgdata: null,
 	data: null,
+
+	paused: false,
 
 	simplex: new SimplexNoise(),
 
@@ -65,7 +67,7 @@ var jsRorshach = {
 				else if(n > 0.52)
 					n = 1;
 				else
-					n = (n - 0.48) * 25;
+					n = (n - 0.48) * 25 + (Math.random() - 0.5) * 0.2;
 				/*n = (n + 0.5) | 0;*/
 				n = (n * 255) | 0;
 				n = 255 - n;
@@ -77,13 +79,23 @@ var jsRorshach = {
 	},
 
 	animate: function() {
-		requestAnimationFrame( jsRorshach.animate );
-		jsRorshach.step();
+		if(!jsRorschach.paused)
+			requestAnimationFrame( jsRorschach.animate );
+		jsRorschach.step();
 		FPS++;
 	},
 
+	pause: function() {
+		this.paused = true;
+	},
+
+	play: function() {
+		this.paused = false;
+		this.animate();
+	},
+
 	putPixel: function (x, y, v) {
-		var p = (x + y * this.width) * 4;
+		var p = (x + y * this.width) << 2;
 		this.data[p] = v;
 		this.data[p+1] = v;
 		this.data[p+2] = v;
