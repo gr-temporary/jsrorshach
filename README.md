@@ -1,1 +1,2 @@
-Simple procedural inkblob test
+Simple procedural inkblot test.
+Based on simplex noise library by Jonas Wagner.
